@@ -583,9 +583,9 @@ body::before {
     var cx = rect.left + rect.width / 2;
     var cy = rect.top + rect.height / 2;
     var isMobile = window.innerWidth < 768;
-    var petalCount = isMobile ? 14 : 22;
-    var flowerCount = isMobile ? 4 : 6;
-    var ribbonCount = isMobile ? 6 : 10;
+    var petalCount = isMobile ? 20 : 30;
+    var flowerCount = isMobile ? 6 : 9;
+    var ribbonCount = isMobile ? 8 : 14;
 
     // 花瓣
     for (var i = 0; i < petalCount; i++) createPetal(cx, cy, i, petalCount, isMobile);
@@ -597,7 +597,7 @@ body::before {
 
   function createPetal(cx, cy, index, total, isMobile) {
     var el = document.createElement('div'); el.className = 'petal';
-    var size = (isMobile ? 6 : 8) + Math.random() * (isMobile ? 10 : 14);
+    var size = (isMobile ? 10 : 14) + Math.random() * (isMobile ? 14 : 18);
     el.style.width = size + 'px'; el.style.height = size + 'px';
     el.style.left = cx + 'px'; el.style.top = cy + 'px';
     var shape = document.createElement('div'); shape.className = 'petal-shape';
@@ -607,12 +607,12 @@ body::before {
     inner.style.background = petalColors[Math.floor(Math.random() * petalColors.length)];
     inner.style.opacity = 0.7 + Math.random() * 0.3;
     shape.appendChild(inner); el.appendChild(shape); document.body.appendChild(el);
-    animateBurst(el, cx, cy, index, total, isMobile, 35, 55, 80, 120, 600);
+    animateBurst(el, cx, cy, index, total, isMobile, 35, 55, 80, 120, 600, false, 1);
   }
 
   function createFlower(cx, cy, index, total, isMobile) {
     var el = document.createElement('div'); el.className = 'petal';
-    var size = (isMobile ? 14 : 18) + Math.random() * (isMobile ? 8 : 12);
+    var size = (isMobile ? 20 : 28) + Math.random() * (isMobile ? 12 : 18);
     el.style.width = size + 'px'; el.style.height = size + 'px';
     el.style.left = cx + 'px'; el.style.top = cy + 'px';
     el.style.fontSize = size + 'px';
@@ -620,13 +620,13 @@ body::before {
     var flower = document.createElement('span'); flower.className = 'petal-flower';
     flower.textContent = flowerEmojis[Math.floor(Math.random() * flowerEmojis.length)];
     shape.appendChild(flower); el.appendChild(shape); document.body.appendChild(el);
-    animateBurst(el, cx, cy, index, total, isMobile, 40, 60, 90, 140, 700);
+    animateBurst(el, cx, cy, index, total, isMobile, 40, 60, 90, 140, 700, false, 1.2);
   }
 
   function createRibbon(cx, cy, index, total, isMobile) {
     var el = document.createElement('div'); el.className = 'petal';
-    var w = (isMobile ? 3 : 4) + Math.random() * 3;
-    var h = (isMobile ? 14 : 18) + Math.random() * (isMobile ? 10 : 16);
+    var w = (isMobile ? 5 : 7) + Math.random() * 4;
+    var h = (isMobile ? 22 : 30) + Math.random() * (isMobile ? 14 : 22);
     el.style.width = w + 'px'; el.style.height = h + 'px';
     el.style.left = cx + 'px'; el.style.top = cy + 'px';
     var ribbon = document.createElement('div'); ribbon.className = 'petal-ribbon';
@@ -634,10 +634,10 @@ body::before {
     ribbon.style.opacity = 0.6 + Math.random() * 0.4;
     el.appendChild(ribbon); document.body.appendChild(el);
     // 彩带飘带感：更慢、飘更远、多旋转
-    animateBurst(el, cx, cy, index, total, isMobile, 50, 70, 100, 160, 850, true);
+    animateBurst(el, cx, cy, index, total, isMobile, 55, 80, 110, 170, 950, true);
   }
 
-  function animateBurst(el, cx, cy, index, total, isMobile, minDist, randDist, extraDist, extraMobileDist, baseDur, isRibbon) {
+  function animateBurst(el, cx, cy, index, total, isMobile, minDist, randDist, extraDist, extraMobileDist, baseDur, isRibbon, sizeScale) {
     var angle = (index / total) * Math.PI * 2 + (Math.random() - 0.5) * 0.8;
     var distance = minDist + Math.random() * randDist + (isMobile ? 0 : extraDist) + (isMobile ? extraMobileDist * 0.5 : 0);
     var duration = baseDur + Math.random() * 350;
@@ -645,11 +645,12 @@ body::before {
     var dx = Math.cos(angle) * distance;
     var dy = Math.sin(angle) * distance - (isRibbon ? 10 : 20);
     // 彩带额外加横向飘移
-    if (isRibbon) dx += (Math.random() - 0.5) * 40;
+    if (isRibbon) dx += (Math.random() - 0.5) * 60;
+    var sc = (sizeScale || 1) * 0.45;
     el.style.transition = 'transform ' + duration + 'ms cubic-bezier(0.22,0.61,0.36,1), opacity ' + duration + 'ms ease-out';
     requestAnimationFrame(function() { requestAnimationFrame(function() {
       el.style.opacity = '1';
-      el.style.transform = 'translate(' + dx + 'px,' + dy + 'px) rotate(' + rotation + 'deg) scale(0.35)';
+      el.style.transform = 'translate(' + dx + 'px,' + dy + 'px) rotate(' + rotation + 'deg) scale(' + sc + ')';
     }); });
     setTimeout(function() { el.style.opacity = '0'; }, duration * 0.5);
     setTimeout(function() { if (el.parentNode) el.parentNode.removeChild(el); }, duration + 120);
