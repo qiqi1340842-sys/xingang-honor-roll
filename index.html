@@ -156,10 +156,15 @@ body::before {
 
 /* ===== 花瓣 ===== */
 .petal { position: fixed; pointer-events: none; z-index: 9999; opacity: 0; will-change: transform, opacity; }
-.petal-shape { width: 100%; height: 100%; border-radius: 50% 0 50% 0; }
+.petal-shape { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; }
+.petal-flower { font-size: inherit; line-height: 1; }
+.petal-ribbon { width: 100%; height: 100%; border-radius: 2px; }
 
 /* ===== 底部 ===== */
-.footer { text-align: center; padding: 36px 0 28px; color: var(--text-dim); font-size: 10px; letter-spacing: 3px; }
+.footer { text-align: center; padding: 48px 0 32px; }
+.footer-quote { font-family: var(--font-display); font-size: 20px; letter-spacing: 3px; color: var(--gold); margin-bottom: 14px; line-height: 1.5; }
+.footer-sub { font-family: var(--font-display); font-size: 14px; letter-spacing: 2px; color: var(--text-muted); margin-bottom: 20px; line-height: 1.6; }
+.footer-brand { font-size: 10px; letter-spacing: 3px; color: var(--text-dim); }
 
 /* ===== 平板 ===== */
 @media (min-width: 480px) {
@@ -181,6 +186,8 @@ body::before {
   .sector-stat-value { font-size: 19px; }
   .channel-card { padding: 18px 20px; }
   .channel-order { font-size: 24px; }
+  .footer-quote { font-size: 22px; letter-spacing: 4px; }
+  .footer-sub { font-size: 15px; }
 }
 
 /* ===== 桌面 ===== */
@@ -210,6 +217,8 @@ body::before {
   .channel-card { flex-direction: column; text-align: center; padding: 24px 16px; }
   .channel-body { flex-direction: column; text-align: center; }
   .channel-order { font-size: 28px; }
+  .footer-quote { font-size: 26px; letter-spacing: 5px; }
+  .footer-sub { font-size: 16px; }
 }
 
 /* ===== 打印 ===== */
@@ -541,7 +550,11 @@ body::before {
     </div>
   </section>
 
-  <footer class="footer">新港集团 · 新媒体中心</footer>
+  <footer class="footer">
+    <p class="footer-quote">每一次亮剑，都是给平庸的回答</p>
+    <p class="footer-sub">希望你继续兴趣盎然的跟这个世界交手</p>
+    <p class="footer-brand">新港集团 · 新媒体中心</p>
+  </footer>
 </div>
 </main>
 
@@ -557,9 +570,11 @@ body::before {
   });
 })();
 
-// 花瓣爆炸
+// 花瓣爆炸 + 小花 + 彩带
 (function() {
   var petalColors = ['#C9A96E','#E2C992','#D4A94E','#F0D68C','#FFD700','#B8860B','#DAA520','#F5DEB3','#E8C36A','#C7A44E'];
+  var ribbonColors = ['#C9A96E','#E2C992','#D4A94E','#FFD700','#DAA520','#F5DEB3','#E8C36A','#C7A44E','#FFDAB9','#FFE4C4'];
+  var flowerEmojis = ['🌸','🌺','💮','🏵️','✿'];
   var petalShapes = ['50% 0 50% 0','0 50% 0 50%','50% 50% 0 0','40% 10% 40% 10%','60% 0 40% 0'];
 
   function burstPetals(wrap) {
@@ -568,32 +583,78 @@ body::before {
     var cx = rect.left + rect.width / 2;
     var cy = rect.top + rect.height / 2;
     var isMobile = window.innerWidth < 768;
-    var count = isMobile ? (12 + Math.floor(Math.random() * 6)) : (18 + Math.floor(Math.random() * 8));
-    for (var i = 0; i < count; i++) createPetal(cx, cy, i, count, isMobile);
+    var petalCount = isMobile ? 14 : 22;
+    var flowerCount = isMobile ? 4 : 6;
+    var ribbonCount = isMobile ? 6 : 10;
+
+    // 花瓣
+    for (var i = 0; i < petalCount; i++) createPetal(cx, cy, i, petalCount, isMobile);
+    // 小花
+    for (var i = 0; i < flowerCount; i++) createFlower(cx, cy, i, flowerCount, isMobile);
+    // 彩带
+    for (var i = 0; i < ribbonCount; i++) createRibbon(cx, cy, i, ribbonCount, isMobile);
   }
 
   function createPetal(cx, cy, index, total, isMobile) {
     var el = document.createElement('div'); el.className = 'petal';
-    var size = (isMobile ? 5 : 6) + Math.random() * (isMobile ? 8 : 10);
+    var size = (isMobile ? 6 : 8) + Math.random() * (isMobile ? 10 : 14);
     el.style.width = size + 'px'; el.style.height = size + 'px';
     el.style.left = cx + 'px'; el.style.top = cy + 'px';
     var shape = document.createElement('div'); shape.className = 'petal-shape';
-    shape.style.borderRadius = petalShapes[Math.floor(Math.random() * petalShapes.length)];
-    shape.style.background = petalColors[Math.floor(Math.random() * petalColors.length)];
-    shape.style.opacity = 0.7 + Math.random() * 0.3;
-    el.appendChild(shape); document.body.appendChild(el);
+    var inner = document.createElement('div');
+    inner.style.width = '100%'; inner.style.height = '100%';
+    inner.style.borderRadius = petalShapes[Math.floor(Math.random() * petalShapes.length)];
+    inner.style.background = petalColors[Math.floor(Math.random() * petalColors.length)];
+    inner.style.opacity = 0.7 + Math.random() * 0.3;
+    shape.appendChild(inner); el.appendChild(shape); document.body.appendChild(el);
+    animateBurst(el, cx, cy, index, total, isMobile, 35, 55, 80, 120, 600);
+  }
+
+  function createFlower(cx, cy, index, total, isMobile) {
+    var el = document.createElement('div'); el.className = 'petal';
+    var size = (isMobile ? 14 : 18) + Math.random() * (isMobile ? 8 : 12);
+    el.style.width = size + 'px'; el.style.height = size + 'px';
+    el.style.left = cx + 'px'; el.style.top = cy + 'px';
+    el.style.fontSize = size + 'px';
+    var shape = document.createElement('div'); shape.className = 'petal-shape';
+    var flower = document.createElement('span'); flower.className = 'petal-flower';
+    flower.textContent = flowerEmojis[Math.floor(Math.random() * flowerEmojis.length)];
+    shape.appendChild(flower); el.appendChild(shape); document.body.appendChild(el);
+    animateBurst(el, cx, cy, index, total, isMobile, 40, 60, 90, 140, 700);
+  }
+
+  function createRibbon(cx, cy, index, total, isMobile) {
+    var el = document.createElement('div'); el.className = 'petal';
+    var w = (isMobile ? 3 : 4) + Math.random() * 3;
+    var h = (isMobile ? 14 : 18) + Math.random() * (isMobile ? 10 : 16);
+    el.style.width = w + 'px'; el.style.height = h + 'px';
+    el.style.left = cx + 'px'; el.style.top = cy + 'px';
+    var ribbon = document.createElement('div'); ribbon.className = 'petal-ribbon';
+    ribbon.style.background = ribbonColors[Math.floor(Math.random() * ribbonColors.length)];
+    ribbon.style.opacity = 0.6 + Math.random() * 0.4;
+    el.appendChild(ribbon); document.body.appendChild(el);
+    // 彩带飘带感：更慢、飘更远、多旋转
+    animateBurst(el, cx, cy, index, total, isMobile, 50, 70, 100, 160, 850, true);
+  }
+
+  function animateBurst(el, cx, cy, index, total, isMobile, minDist, randDist, extraDist, extraMobileDist, baseDur, isRibbon) {
     var angle = (index / total) * Math.PI * 2 + (Math.random() - 0.5) * 0.8;
-    var distance = (isMobile ? 35 : 50) + Math.random() * (isMobile ? 55 : 80);
-    var duration = 500 + Math.random() * 400;
-    var rotation = (Math.random() - 0.5) * 720;
-    var dx = Math.cos(angle) * distance, dy = Math.sin(angle) * distance - 15;
+    var distance = minDist + Math.random() * randDist + (isMobile ? 0 : extraDist) + (isMobile ? extraMobileDist * 0.5 : 0);
+    var duration = baseDur + Math.random() * 350;
+    var rotation = (Math.random() - 0.5) * (isRibbon ? 1080 : 720);
+    var dx = Math.cos(angle) * distance;
+    var dy = Math.sin(angle) * distance - (isRibbon ? 10 : 20);
+    // 彩带额外加横向飘移
+    if (isRibbon) dx += (Math.random() - 0.5) * 40;
     el.style.transition = 'transform ' + duration + 'ms cubic-bezier(0.22,0.61,0.36,1), opacity ' + duration + 'ms ease-out';
     requestAnimationFrame(function() { requestAnimationFrame(function() {
-      el.style.opacity = '1'; el.style.transform = 'translate(' + dx + 'px,' + dy + 'px) rotate(' + rotation + 'deg) scale(0.3)';
+      el.style.opacity = '1';
+      el.style.transform = 'translate(' + dx + 'px,' + dy + 'px) rotate(' + rotation + 'deg) scale(0.35)';
     }); });
-    setTimeout(function() { el.style.opacity = '0'; }, duration * 0.45);
-    setTimeout(function() { if (el.parentNode) el.parentNode.removeChild(el); }, duration + 100);
+    setTimeout(function() { el.style.opacity = '0'; }, duration * 0.5);
+    setTimeout(function() { if (el.parentNode) el.parentNode.removeChild(el); }, duration + 120);
   }
+
   window.burstPetals = burstPetals;
 })();
 </script>
