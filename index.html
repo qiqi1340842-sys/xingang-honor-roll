@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>新港集团荣耀榜</title>
+<style>
+:root {
+  --bg: #0A0A0A;
+  --surface: #141414;
+  --surface-hover: #1C1C1C;
+  --gold: #C9A96E;
+  --gold-light: #E2C992;
+  --gold-dim: #8B7340;
+  --text: #F0ECE4;
+  --text-muted: #8A8478;
+  --text-dim: #5A5650;
+  --divider: #222;
+  --font-display: Georgia, "Noto Serif SC", "SimSun", serif;
+  --font-body: system-ui, -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html {
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 15px;
+  line-height: 1.6;
+  min-height: 100vh;
+  min-height: 100dvh;
+  overflow-x: hidden;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--gold), transparent);
+  z-index: 100;
+}
+
+.container { max-width: 960px; margin: 0 auto; padding: 0 20px; }
+
+/* ===== 首屏 ===== */
+.hero { padding: 56px 0 36px; text-align: center; }
+.hero-label { font-size: 10px; letter-spacing: 5px; text-transform: uppercase; color: var(--gold); margin-bottom: 16px; }
+.hero-title {
+  font-family: var(--font-display);
+  font-size: 32px; font-weight: 400;
+  color: var(--text); letter-spacing: 4px; line-height: 1.2; margin-bottom: 12px;
+}
+.hero-title em { font-style: normal; color: var(--gold); }
+.hero-sub { font-size: 13px; color: var(--text-muted); letter-spacing: 2px; }
+.divider { border: none; height: 1px; background: linear-gradient(90deg, transparent, var(--gold-dim), transparent); margin: 0; }
+
+/* ===== 章节 ===== */
+.section { padding: 40px 0; }
+.section-header { text-align: center; margin-bottom: 28px; }
+.section-number { display: block; font-size: 10px; letter-spacing: 3px; color: var(--gold-dim); margin-bottom: 6px; font-family: var(--font-mono); }
+.section-title { font-family: var(--font-display); font-size: 22px; font-weight: 400; letter-spacing: 4px; color: var(--text); }
+.section-title em { font-style: normal; color: var(--gold); }
+
+/* ===== 头像通用 ===== */
+.avatar-wrap {
+  position: relative; display: inline-block; cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.avatar {
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-display); color: var(--bg);
+  background: var(--gold); background-size: cover; background-position: center 20%;
+  user-select: none; transition: transform 0.2s, box-shadow 0.3s;
+  position: relative; z-index: 2; overflow: hidden;
+}
+.avatar.has-img { text-indent: -9999px; }
+.avatar::after {
+  content: ''; position: absolute; inset: -3px; border-radius: 50%;
+  border: 1px solid var(--gold-dim); pointer-events: none;
+}
+.avatar-wrap:hover .avatar { transform: scale(1.06); box-shadow: 0 0 20px rgba(201,169,110,0.25); }
+.avatar-wrap:active .avatar { transform: scale(0.94); }
+
+/* ===== 优秀板块 ===== */
+.sector-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.sector-card {
+  background: var(--surface); border: 1px solid var(--divider);
+  padding: 20px 14px; text-align: center; transition: border-color 0.3s;
+}
+.sector-card:hover { border-color: var(--gold-dim); }
+.sector-brand { font-size: 10px; letter-spacing: 2px; color: var(--gold); margin-bottom: 6px; }
+.sector-name { font-family: var(--font-display); font-size: 15px; letter-spacing: 1px; margin-bottom: 10px; }
+.sector-stats { display: flex; justify-content: center; gap: 16px; }
+.sector-stat-value { font-family: var(--font-mono); font-size: 17px; font-weight: 600; color: var(--gold-light); line-height: 1.2; }
+.sector-stat-label { font-size: 9px; color: var(--text-muted); letter-spacing: 1px; }
+
+/* ===== 渠道订单晾晒 ===== */
+.channel-grid { display: grid; grid-template-columns: 1fr; gap: 8px; }
+.channel-card {
+  background: var(--surface); border: 1px solid var(--divider);
+  padding: 16px 16px; display: flex; align-items: center; gap: 14px;
+  transition: border-color 0.3s;
+}
+.channel-card:hover { border-color: var(--gold-dim); }
+.channel-icon {
+  width: 44px; height: 44px; flex-shrink: 0;
+  border-radius: 50%; border: 1px solid var(--divider);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; color: var(--gold); letter-spacing: 0;
+  background: var(--bg); font-family: var(--font-body); line-height: 1.2;
+  text-align: center;
+}
+.channel-body { flex: 1; min-width: 0; display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.channel-name { font-family: var(--font-display); font-size: 15px; letter-spacing: 1px; }
+.channel-source { font-size: 9px; color: var(--text-muted); letter-spacing: 1px; margin-top: 1px; }
+.channel-order { font-family: var(--font-mono); font-size: 20px; font-weight: 600; color: var(--gold-light); flex-shrink: 0; line-height: 1.2; }
+.channel-order-label { font-size: 9px; color: var(--text-muted); letter-spacing: 1px; }
+
+/* ===== 明星IP ===== */
+.ip-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.ip-card {
+  background: var(--surface); border: 1px solid var(--divider);
+  padding: 24px 16px 18px; text-align: center; position: relative; transition: border-color 0.3s;
+}
+.ip-card:hover { border-color: var(--gold-dim); }
+.ip-card .crown { position: absolute; top: -12px; left: 50%; transform: translateX(-50%); font-size: 18px; line-height: 1; }
+.ip-card .avatar { width: 72px; height: 72px; font-size: 22px; margin-bottom: 10px; }
+.ip-name { font-family: var(--font-display); font-size: 16px; letter-spacing: 2px; margin-bottom: 2px; }
+.ip-tag { font-size: 9px; color: var(--gold); letter-spacing: 2px; margin-bottom: 10px; }
+.ip-stats { display: flex; justify-content: center; gap: 20px; }
+.ip-stat-value { font-family: var(--font-mono); font-size: 18px; font-weight: 600; color: var(--gold-light); line-height: 1.2; }
+.ip-stat-label { font-size: 9px; color: var(--text-muted); letter-spacing: 1px; }
+
+/* ===== 优秀主播 ===== */
+.anchor-section { margin-bottom: 20px; }
+.anchor-brand { font-size: 11px; letter-spacing: 3px; color: var(--gold); text-align: center; margin-bottom: 10px; padding-bottom: 6px; border-bottom: 1px solid var(--divider); }
+.anchor-card {
+  background: var(--surface); border: 1px solid var(--divider);
+  padding: 14px 16px; margin-bottom: 8px;
+  display: flex; align-items: center; gap: 14px; transition: border-color 0.3s;
+}
+.anchor-card:hover { border-color: var(--gold-dim); }
+.anchor-card .avatar { width: 52px; height: 52px; font-size: 17px; flex-shrink: 0; }
+.anchor-card .avatar::after { inset: -2px; }
+.anchor-rank { font-family: var(--font-mono); font-size: 12px; color: var(--gold-dim); width: 20px; text-align: center; flex-shrink: 0; line-height: 1; }
+.anchor-rank.top { color: var(--gold); font-weight: 700; font-size: 14px; }
+.anchor-body { flex: 1; min-width: 0; display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.anchor-info { min-width: 0; }
+.anchor-name { font-family: var(--font-display); font-size: 15px; letter-spacing: 1px; line-height: 1.3; }
+.anchor-brand-tag { font-size: 9px; color: var(--text-muted); letter-spacing: 1px; }
+.anchor-stats { display: flex; gap: 14px; flex-shrink: 0; }
+.anchor-stat { text-align: right; }
+.anchor-stat-val { font-family: var(--font-mono); font-size: 14px; font-weight: 600; color: var(--gold-light); line-height: 1.2; }
+.anchor-stat-lbl { font-size: 8px; color: var(--text-muted); letter-spacing: 1px; }
+
+/* ===== 花瓣 ===== */
+.petal { position: fixed; pointer-events: none; z-index: 9999; opacity: 0; will-change: transform, opacity; }
+.petal-shape { width: 100%; height: 100%; border-radius: 50% 0 50% 0; }
+
+/* ===== 底部 ===== */
+.footer { text-align: center; padding: 36px 0 28px; color: var(--text-dim); font-size: 10px; letter-spacing: 3px; }
+
+/* ===== 平板 ===== */
+@media (min-width: 480px) {
+  .container { padding: 0 28px; }
+  .hero { padding: 68px 0 44px; }
+  .hero-title { font-size: 38px; letter-spacing: 5px; }
+  .hero-label { font-size: 11px; letter-spacing: 6px; }
+  .section { padding: 52px 0; }
+  .section-header { margin-bottom: 36px; }
+  .section-title { font-size: 26px; letter-spacing: 5px; }
+  .ip-card .avatar { width: 80px; height: 80px; font-size: 24px; }
+  .ip-name { font-size: 18px; }
+  .ip-stat-value { font-size: 20px; }
+  .anchor-card .avatar { width: 56px; height: 56px; font-size: 18px; }
+  .anchor-name { font-size: 16px; }
+  .anchor-stat-val { font-size: 15px; }
+  .sector-grid { gap: 14px; }
+  .sector-card { padding: 24px 18px; }
+  .sector-stat-value { font-size: 19px; }
+  .channel-card { padding: 18px 20px; }
+  .channel-icon { width: 50px; height: 50px; font-size: 12px; }
+  .channel-order { font-size: 24px; }
+}
+
+/* ===== 桌面 ===== */
+@media (min-width: 768px) {
+  .container { padding: 0 36px; }
+  .hero { padding: 80px 0 48px; }
+  .hero-title { font-size: 44px; letter-spacing: 6px; }
+  .hero-sub { font-size: 14px; }
+  .section { padding: 56px 0; }
+  .section-header { margin-bottom: 40px; }
+  .section-title { font-size: 28px; letter-spacing: 6px; }
+  .ip-grid { gap: 20px; }
+  .ip-card { padding: 34px 24px 24px; }
+  .ip-card .avatar { width: 88px; height: 88px; font-size: 28px; margin-bottom: 12px; }
+  .ip-name { font-size: 20px; letter-spacing: 3px; }
+  .ip-stat-value { font-size: 22px; }
+  .ip-stats { gap: 32px; }
+  .anchor-card { padding: 16px 20px; gap: 16px; }
+  .anchor-card .avatar { width: 60px; height: 60px; font-size: 20px; }
+  .anchor-name { font-size: 17px; letter-spacing: 2px; }
+  .anchor-stats { gap: 20px; }
+  .anchor-stat-val { font-size: 16px; }
+  .sector-grid { grid-template-columns: repeat(4, 1fr); }
+  .sector-stat-value { font-size: 20px; }
+  .sector-name { font-size: 17px; }
+  .channel-grid { grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+  .channel-card { flex-direction: column; text-align: center; padding: 24px 16px; }
+  .channel-body { flex-direction: column; text-align: center; }
+  .channel-order { font-size: 28px; }
+}
+
+/* ===== 打印 ===== */
+@media print {
+  body { background: #fff; color: #000; }
+  body::before { display: none; }
+  .avatar { background: #ddd !important; color: #333 !important; }
+  .petal { display: none !important; }
+  .ip-card, .anchor-card, .sector-card, .channel-card { border-color: #ccc; background: #fff; }
+  .ip-stat-value, .anchor-stat-val, .sector-stat-value, .channel-order { color: #333; }
+  .ip-tag, .anchor-brand, .sector-brand, .section-title em, .hero-title em { color: #8B7340; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .petal { display: none !important; }
+  .avatar { transition: none; }
+  html { scroll-behavior: auto; }
+}
+</style>
+</head>
+<body>
+
+<main>
+<div class="container">
+  <header class="hero">
+    <p class="hero-label">2026 成都国际车展</p>
+    <h1 class="hero-title"><em>新港集团</em>荣耀榜</h1>
+    <p class="hero-sub">战果 · 实力 · 担当</p>
+  </header>
+
+  <hr class="divider">
+
+  <!-- 01 优秀板块 -->
+  <section class="section" id="top-sectors">
+    <div class="section-header">
+      <span class="section-number">01</span>
+      <h2 class="section-title"><em>优秀</em>板块</h2>
+    </div>
+    <div class="sector-grid">
+      <div class="sector-card">
+        <div class="sector-brand">腾势</div>
+        <div class="sector-name">上元臻享</div>
+        <div class="sector-stats">
+          <div><div class="sector-stat-value">512</div><div class="sector-stat-label">线索</div></div>
+          <div><div class="sector-stat-value">12</div><div class="sector-stat-label">订单</div></div>
+        </div>
+      </div>
+      <div class="sector-card">
+        <div class="sector-brand">方程豹</div>
+        <div class="sector-name">上元坤灵</div>
+        <div class="sector-stats">
+          <div><div class="sector-stat-value">547</div><div class="sector-stat-label">线索</div></div>
+          <div><div class="sector-stat-value">19</div><div class="sector-stat-label">订单</div></div>
+        </div>
+      </div>
+      <div class="sector-card">
+        <div class="sector-brand">王朝</div>
+        <div class="sector-name">洪武盛世</div>
+        <div class="sector-stats">
+          <div><div class="sector-stat-value">647</div><div class="sector-stat-label">线索</div></div>
+          <div><div class="sector-stat-value">39</div><div class="sector-stat-label">订单</div></div>
+        </div>
+      </div>
+      <div class="sector-card">
+        <div class="sector-brand">海洋</div>
+        <div class="sector-name">新茂元大</div>
+        <div class="sector-stats">
+          <div><div class="sector-stat-value">914</div><div class="sector-stat-label">线索</div></div>
+          <div><div class="sector-stat-value">52</div><div class="sector-stat-label">订单</div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <!-- 02 渠道订单晾晒 -->
+  <section class="section" id="channel-orders">
+    <div class="section-header">
+      <span class="section-number">02</span>
+      <h2 class="section-title">渠道订单<em>晾晒</em></h2>
+    </div>
+    <div class="channel-grid">
+      <div class="channel-card">
+        <div class="channel-icon">小红书<br>闲鱼<br>视频号</div>
+        <div class="channel-body">
+          <div>
+            <div class="channel-name">小红书 / 闲鱼 / 视频号</div>
+            <div class="channel-source">主力贡献：主播</div>
+          </div>
+          <div style="text-align:right">
+            <div class="channel-order">39</div>
+            <div class="channel-order-label">订单</div>
+          </div>
+        </div>
+      </div>
+      <div class="channel-card">
+        <div class="channel-icon">B站</div>
+        <div class="channel-body">
+          <div>
+            <div class="channel-name">B站</div>
+            <div class="channel-source">主力贡献：张迪</div>
+          </div>
+          <div style="text-align:right">
+            <div class="channel-order">35</div>
+            <div class="channel-order-label">订单</div>
+          </div>
+        </div>
+      </div>
+      <div class="channel-card">
+        <div class="channel-icon">抖音</div>
+        <div class="channel-body">
+          <div>
+            <div class="channel-name">抖音</div>
+            <div class="channel-source">主力贡献：全员</div>
+          </div>
+          <div style="text-align:right">
+            <div class="channel-order">483</div>
+            <div class="channel-order-label">订单</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <!-- 03 明星IP -->
+  <section class="section" id="star-ip">
+    <div class="section-header">
+      <span class="section-number">03</span>
+      <h2 class="section-title"><em>明星</em>IP</h2>
+    </div>
+    <div class="ip-grid">
+      <div class="ip-card">
+        <span class="crown">👑</span>
+        <div class="avatar-wrap" onclick="burstPetals(this)">
+          <div class="avatar" data-img="https://www.coze.cn/s/WxE6QSmFkns/">冉</div>
+        </div>
+        <div class="ip-name">冉总</div>
+        <div class="ip-tag">IP主播</div>
+        <div class="ip-stats">
+          <div><div class="ip-stat-value">1490</div><div class="ip-stat-label">线索</div></div>
+          <div><div class="ip-stat-value">89</div><div class="ip-stat-label">订单</div></div>
+        </div>
+      </div>
+      <div class="ip-card">
+        <span class="crown">👑</span>
+        <div class="avatar-wrap" onclick="burstPetals(this)">
+          <div class="avatar" data-img="https://www.coze.cn/s/TP_Oly35m-E/">张</div>
+        </div>
+        <div class="ip-name">张迪</div>
+        <div class="ip-tag">IP主播</div>
+        <div class="ip-stats">
+          <div><div class="ip-stat-value">401</div><div class="ip-stat-label">线索</div></div>
+          <div><div class="ip-stat-value">61</div><div class="ip-stat-label">订单</div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <!-- 04 优秀主播 -->
+  <section class="section" id="top-anchors">
+    <div class="section-header">
+      <span class="section-number">04</span>
+      <h2 class="section-title"><em>优秀</em>主播</h2>
+    </div>
+
+    <!-- 腾势 -->
+    <div class="anchor-section">
+      <div class="anchor-brand">腾势</div>
+      <div class="anchor-card">
+        <span class="anchor-rank top">1</span>
+        <div class="avatar-wrap" onclick="burstPetals(this)">
+          <div class="avatar" data-img="https://www.coze.cn/s/jcmGgNji1Y0/">李</div>
+        </div>
+        <div class="anchor-body">
+          <div class="anchor-info"><div class="anchor-name">李彬玮</div><div class="anchor-brand-tag">腾势</div></div>
+          <div class="anchor-stats">
+            <div class="anchor-stat"><div class="anchor-stat-val">298</div><div class="anchor-stat-lbl">线索</div></div>
+            <div class="anchor-stat"><div class="anchor-stat-val">4</div><div class="anchor-stat-lbl">订单</div></div>
+          </div>
+        </div>
+      </div>
+      <div class="anchor-card">
+        <span class="anchor-rank">2</span>
+        <div class="avatar-wrap" onclick="burstPetals(this)">
+          <div class="avatar" data-img="https://www.coze.cn/s/mik_XJTe9TE/">王</div>
+        </div>
+        <div class="anchor-body">
+          <div class="anchor-info"><div class="anchor-name">王梦</div><div class="anchor-brand-tag">腾势</div></div>
+          <div class="anchor-stats">
+            <div class="anchor-stat"><div class="anchor-stat-val">240</div><div class="anchor-stat-lbl">线索</div></div>
+            <div class="anchor-stat"><div class="anchor-stat-val">7</div><div class="anchor-stat-lbl">订单</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 方程豹 -->
+    <div class="anchor-section">
+      <div class="anchor-brand">方程豹</div>
+      <div class="anchor-card">
+        <span class="anchor-rank top">1</span>
+        <div class="avatar-wrap" onclick="burstPetals(this)">
+          <div class="avatar" data-img="https://www.coze.cn/s/j2JHBxb0010/">何</div>
+        </div>
+        <div class="anchor-body">
+          <div class="anchor-info"><div class="anchor-name">何娇</div><div class="anchor-brand-tag">方程豹</div></div>
+          <div class="anchor-stats">
+            <div class="anchor-stat"><div class="anchor-stat-val">341</div><div class="anchor-stat-lbl">线索</div></div>
+            <div class="anchor-stat"><div class="anchor-stat-val">8</div><div class="anchor-stat-lbl">订单</div></div>
+          </div>
+        </div>
+      </div>
+      <div class="anchor-card">
+        <span class="anchor-rank">2</span>
+        <div class="avatar-wrap" onclick="burstPetals(this)">
+          <div class="avatar" data-img="https://www.coze.cn/s/kDpHaRkiWjM/">田</div>
+        </div>
+        <div class="anchor-body">
+          <div class="anchor-info"><div class="anchor-name">田景燚</div><div class="anchor-brand-tag">方程豹</div></div>
+          <div class="anchor-stats">
+            <div class="anchor-stat"><div class="anchor-stat-val">273</div><div class="anchor-stat-lbl">线索</div></div>
+            <div class="anchor-stat"><div class="anchor-stat-val">12</div><div class="anchor-stat-lbl">订单</div></div>
+          </div>
+        </div>
+      </div>
+      <div class="anchor-card">
+        <span class="anchor-rank">3</span>
+        <div class="avatar-wrap" onclick="burstPetals(this)">
+          <div class="avatar" data-img="https://www.coze.cn/s/l6wG79wrTrg/">任</div>
+        </div>
+        <div class="anchor-body">
+          <div class="anchor-info"><div class="anchor-name">任婉莹</div><div class="anchor-brand-tag">方程豹</div></div>
+          <div class="anchor-stats">
+            <div class="anchor-stat"><div class="anchor-stat-val">240</div><div class="anchor-stat-lbl">线索</div></div>
+            <div class="anchor-stat"><div class="anchor-stat-val">11</div><div class="anchor-stat-lbl">订单</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 王朝 -->
+    <div class="anchor-section">
+      <div class="anchor-brand">王朝</div>
+      <div class="anchor-card">
+        <span class="anchor-rank top">1</span>
+        <div class="avatar-wrap" onclick="burstPetals(this)">
+          <div class="avatar" data-img="https://www.coze.cn/s/m0YlA3_3Tek/">吴</div>
+        </div>
+        <div class="anchor-body">
+          <div class="anchor-info"><div class="anchor-name">吴婷</div><div class="anchor-brand-tag">王朝</div></div>
+          <div class="anchor-stats">
+            <div class="anchor-stat"><div class="anchor-stat-val">387</div><div class="anchor-stat-lbl">线索</div></div>
+            <div class="anchor-stat"><div class="anchor-stat-val">15</div><div class="anchor-stat-lbl">订单</div></div>
+          </div>
+        </div>
+      </div>
+      <div class="anchor-card">
+        <span class="anchor-rank">2</span>
+        <div class="avatar-wrap" onclick="burstPetals(this)">
+          <div class="avatar" data-img="https://www.coze.cn/s/c2I0vlYik1M/">李</div>
+        </div>
+        <div class="anchor-body">
+          <div class="anchor-info"><div class="anchor-name">李洁鑫</div><div class="anchor-brand-tag">王朝</div></div>
+          <div class="anchor-stats">
+            <div class="anchor-stat"><div class="anchor-stat-val">260</div><div class="anchor-stat-lbl">线索</div></div>
+            <div class="anchor-stat"><div class="anchor-stat-val">13</div><div class="anchor-stat-lbl">订单</div></div>
+          </div>
+        </div>
+      </div>
+      <div class="anchor-card">
+        <span class="anchor-rank">3</span>
+        <div class="avatar-wrap" onclick="burstPetals(this)">
+          <div class="avatar" data-img="https://www.coze.cn/s/mklhAJ0Dva8/">何</div>
+        </div>
+        <div class="anchor-body">
+          <div class="anchor-info"><div class="anchor-name">何靓</div><div class="anchor-brand-tag">王朝</div></div>
+          <div class="anchor-stats">
+            <div class="anchor-stat"><div class="anchor-stat-val">204</div><div class="anchor-stat-lbl">线索</div></div>
+            <div class="anchor-stat"><div class="anchor-stat-val">18</div><div class="anchor-stat-lbl">订单</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 海洋 -->
+    <div class="anchor-section">
+      <div class="anchor-brand">海洋</div>
+      <div class="anchor-card">
+        <span class="anchor-rank top">1</span>
+        <div class="avatar-wrap" onclick="burstPetals(this)">
+          <div class="avatar" data-img="https://www.coze.cn/s/lIPPZljk_LY/">石</div>
+        </div>
+        <div class="anchor-body">
+          <div class="anchor-info"><div class="anchor-name">石志纯</div><div class="anchor-brand-tag">海洋</div></div>
+          <div class="anchor-stats">
+            <div class="anchor-stat"><div class="anchor-stat-val">227</div><div class="anchor-stat-lbl">线索</div></div>
+            <div class="anchor-stat"><div class="anchor-stat-val">20</div><div class="anchor-stat-lbl">订单</div></div>
+          </div>
+        </div>
+      </div>
+      <div class="anchor-card">
+        <span class="anchor-rank">2</span>
+        <div class="avatar-wrap" onclick="burstPetals(this)">
+          <div class="avatar" data-img="https://www.coze.cn/s/mQaBQOmt6nc/">杨</div>
+        </div>
+        <div class="anchor-body">
+          <div class="anchor-info"><div class="anchor-name">杨滔滔</div><div class="anchor-brand-tag">海洋</div></div>
+          <div class="anchor-stats">
+            <div class="anchor-stat"><div class="anchor-stat-val">219</div><div class="anchor-stat-lbl">线索</div></div>
+            <div class="anchor-stat"><div class="anchor-stat-val">17</div><div class="anchor-stat-lbl">订单</div></div>
+          </div>
+        </div>
+      </div>
+      <div class="anchor-card">
+        <span class="anchor-rank">3</span>
+        <div class="avatar-wrap" onclick="burstPetals(this)">
+          <div class="avatar" data-img="https://www.coze.cn/s/Up9r311c048/">张</div>
+        </div>
+        <div class="anchor-body">
+          <div class="anchor-info"><div class="anchor-name">张敏</div><div class="anchor-brand-tag">海洋</div></div>
+          <div class="anchor-stats">
+            <div class="anchor-stat"><div class="anchor-stat-val">361</div><div class="anchor-stat-lbl">线索</div></div>
+            <div class="anchor-stat"><div class="anchor-stat-val">9</div><div class="anchor-stat-lbl">订单</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">新港集团 · 新媒体中心</footer>
+</div>
+</main>
+
+<script>
+// 头像图片加载
+(function() {
+  document.querySelectorAll('.avatar[data-img]').forEach(function(av) {
+    var src = av.getAttribute('data-img');
+    if (src && src.trim()) {
+      av.style.backgroundImage = 'url(' + src + ')';
+      av.classList.add('has-img');
+    }
+  });
+})();
+
+// 花瓣爆炸
+(function() {
+  var petalColors = ['#C9A96E','#E2C992','#D4A94E','#F0D68C','#FFD700','#B8860B','#DAA520','#F5DEB3','#E8C36A','#C7A44E'];
+  var petalShapes = ['50% 0 50% 0','0 50% 0 50%','50% 50% 0 0','40% 10% 40% 10%','60% 0 40% 0'];
+
+  function burstPetals(wrap) {
+    var avatar = wrap.querySelector('.avatar');
+    var rect = avatar.getBoundingClientRect();
+    var cx = rect.left + rect.width / 2;
+    var cy = rect.top + rect.height / 2;
+    var isMobile = window.innerWidth < 768;
+    var count = isMobile ? (12 + Math.floor(Math.random() * 6)) : (18 + Math.floor(Math.random() * 8));
+    for (var i = 0; i < count; i++) createPetal(cx, cy, i, count, isMobile);
+  }
+
+  function createPetal(cx, cy, index, total, isMobile) {
+    var el = document.createElement('div'); el.className = 'petal';
+    var size = (isMobile ? 5 : 6) + Math.random() * (isMobile ? 8 : 10);
+    el.style.width = size + 'px'; el.style.height = size + 'px';
+    el.style.left = cx + 'px'; el.style.top = cy + 'px';
+    var shape = document.createElement('div'); shape.className = 'petal-shape';
+    shape.style.borderRadius = petalShapes[Math.floor(Math.random() * petalShapes.length)];
+    shape.style.background = petalColors[Math.floor(Math.random() * petalColors.length)];
+    shape.style.opacity = 0.7 + Math.random() * 0.3;
+    el.appendChild(shape); document.body.appendChild(el);
+    var angle = (index / total) * Math.PI * 2 + (Math.random() - 0.5) * 0.8;
+    var distance = (isMobile ? 35 : 50) + Math.random() * (isMobile ? 55 : 80);
+    var duration = 500 + Math.random() * 400;
+    var rotation = (Math.random() - 0.5) * 720;
+    var dx = Math.cos(angle) * distance, dy = Math.sin(angle) * distance - 15;
+    el.style.transition = 'transform ' + duration + 'ms cubic-bezier(0.22,0.61,0.36,1), opacity ' + duration + 'ms ease-out';
+    requestAnimationFrame(function() { requestAnimationFrame(function() {
+      el.style.opacity = '1'; el.style.transform = 'translate(' + dx + 'px,' + dy + 'px) rotate(' + rotation + 'deg) scale(0.3)';
+    }); });
+    setTimeout(function() { el.style.opacity = '0'; }, duration * 0.45);
+    setTimeout(function() { if (el.parentNode) el.parentNode.removeChild(el); }, duration + 100);
+  }
+  window.burstPetals = burstPetals;
+})();
+</script>
+
+</body>
+</html>
